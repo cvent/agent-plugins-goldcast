@@ -1,0 +1,67 @@
+name: Close External PRs
+
+# This repository doesn't accept external contributions (see CONTRIBUTING.md), but anyone can
+# still fork a public repo and open one regardless. Closes any PR whose author isn't a
+# collaborator with at least write access, so an unsolicited PR never sits open waiting for a
+# human to notice and close it by hand.
+#
+# Modeled on anthropics/claude-plugins-official's close-external-prs.yml, simplified: that repo
+# carves out a narrow exception for in-scope external marketplace additions, which doesn't apply
+# here since this repo accepts no external contributions at all, of any shape.
+#
+# pull_request_target runs with the base repo's workflow file (this one), not the fork's, and
+# with write permissions -- required to close the PR and comment. Safe here because the script
+# never checks out or executes anything from the fork; it only reads the PR author's username
+# from the event payload and calls the GitHub API.
+
+on:
+  pull_request_target:
+    types: [opened]
+
+permissions:
+  pull-requests: write
+  issues: write
+  contents: read
+
+jobs:
+  check-membership:
+    name: Close PR unless author has write access
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
+        with:
+          script: |
+            const author = context.payload.pull_request.user.login;
+
+            let permission = 'none';
+            try {
+              const { data } = await github.rest.repos.getCollaboratorPermissionLevel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                username: author,
+              });
+              permission = data.permission;
+            } catch (e) {
+              // Not a collaborator, or the lookup failed -- treat as no access.
+            }
+
+            if (['admin', 'write'].includes(permission)) {
+              console.log(`${author} has ${permission} access -- leaving PR open.`);
+              return;
+            }
+
+            console.log(`Closing PR from ${author} (permission: ${permission}) -- not a collaborator.`);
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body: "Thanks for your interest! This repository doesn't accept external contributions, including pull requests -- see CONTRIBUTING.md. If you have a suggestion for a new skill or a change to an existing one, contact your account team at Cvent.",
+            });
+
+            await github.rest.pulls.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+              state: 'closed',
+            });
