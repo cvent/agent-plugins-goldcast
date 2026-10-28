@@ -1,0 +1,14 @@
+{
+  "name": "goldcast",
+  "description": "goldcast plugin marketplace",
+  "owner": {
+    "name": "goldcast"
+  },
+  "plugins": [
+    {
+      "name": "goldcast-skills",
+      "source": "./goldcast-skills",
+      "version": "0.0.1"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "Goldcast": {
+      "type": "http",
+      "url": "https://goldcast.mcp.cvent.com/mcp"
+    }
+  }
+}
