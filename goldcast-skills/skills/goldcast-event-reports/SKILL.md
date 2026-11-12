@@ -6,7 +6,7 @@ license: "proprietary"
 
 # Goldcast post-event report
 
-Turns Goldcast event data into one clean report that answers the question a marketer actually has after an event: **did the right people show up, did they engage, what did they ask, and what should we do next?**
+Turns Goldcast event data into one report that answers the question marketers actually have after an event: **did the right people show up, did they engage, what did they ask, and what should we do next?**
 
 Read-only. This skill never creates, edits or registers anything.
 
