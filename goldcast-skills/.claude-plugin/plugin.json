@@ -1,7 +1,7 @@
 {
   "name": "goldcast-skills",
-  "description": "Initial version to exercise production publishing with only the `goldcast-transcript-search` skill.",
-  "version": "0.0.1",
+  "description": "Added goldcast skills:\ngoldcast-speakers-onboard\ngoldcast-event-reports\ngoldcast-event-create-full\ngoldcast-content-from-transcripts\ngoldcast-analytics-query\ngoldcast-audience-intel\ngoldcast-transcript-search",
+  "version": "1.1.0",
   "license": "Apache-2.0",
   "author": {
     "name": "goldcast"

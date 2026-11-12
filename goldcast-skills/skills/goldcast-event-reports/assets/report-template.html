@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>__REPORT_TITLE__</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ---------- Tokens (light default, dark per viewer theme) ---------- */
+:root{
+  --bg:#FAF8F5; --surface:#FFFFFF; --surface2:#F3EFEA; --text:#1B1822; --muted:#625C70;
+  --line:rgba(27,24,34,.12); --accent:#C94E06; --accent2:#6B49D6; --good:#17803D; --warn:#A8620A; --bad:#C0392B;
+  --display:'Bebas Neue',Impact,'Arial Narrow',sans-serif;
+  --body:'Inter Tight',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#15131A; --surface:#1E1B26; --surface2:#272332; --text:#F4F2F8; --muted:#A8A3B8;
+    --line:rgba(255,255,255,.11); --accent:#F26B1D; --accent2:#8E6CF5; --good:#3DD68C; --warn:#F5B84A; --bad:#FF7A6B;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15131A; --surface:#1E1B26; --surface2:#272332; --text:#F4F2F8; --muted:#A8A3B8;
+  --line:rgba(255,255,255,.11); --accent:#F26B1D; --accent2:#8E6CF5; --good:#3DD68C; --warn:#F5B84A; --bad:#FF7A6B;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:400 15px/1.55 var(--body);-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:28px 20px 56px}
+h1,h2,h3{margin:0}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---------- Header ---------- */
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px}
+.eyebrow{font:600 12px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.badge{display:inline-block;font:600 11px/1 var(--body);letter-spacing:.08em;text-transform:uppercase;padding:6px 10px;border-radius:999px;border:1px solid var(--line);color:var(--muted);margin-left:8px}
+.theme{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:6px 12px;font:500 12px var(--body);cursor:pointer}
+.theme:hover{color:var(--text)}
+h1{font:400 clamp(40px,7vw,76px)/.95 var(--display);letter-spacing:.01em;margin:6px 0 10px}
+.sub{color:var(--muted);max-width:760px}
+.headline{margin:22px 0 4px;padding:18px 20px;border-left:4px solid var(--accent);background:var(--surface);border-radius:0 12px 12px 0;font-size:clamp(17px,2.2vw,21px);font-weight:500;line-height:1.4}
+.style-executive .headline{font-size:clamp(20px,3vw,27px)}
+
+/* ---------- Cards / sections ---------- */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px;margin-top:20px}
+.card>h2{font:400 28px/1 var(--display);letter-spacing:.03em;margin-bottom:4px}
+.card>h2 .n{color:var(--accent);margin-right:8px}
+.lede{color:var(--muted);margin:0 0 16px;font-size:14px}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.sbar{display:flex;gap:6px;flex-wrap:wrap}
+
+/* ---------- KPI tiles ---------- */
+.kpis{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));margin-top:20px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}
+.tile .k{font:600 11px/1 var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.tile .v{font:400 44px/1.05 var(--display);margin-top:8px;letter-spacing:.01em}
+.tile .v small{font-size:20px;color:var(--muted)}
+.tile .s{font-size:12.5px;color:var(--muted);margin-top:4px}
+.vs{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}
+.chip{display:inline-block;font:600 12px/1 var(--body);padding:4px 8px;border-radius:999px;background:var(--surface2);color:var(--muted)}
+.chip.up{color:var(--good)} .chip.down{color:var(--bad)} .chip.est{color:var(--warn)}
+
+/* ---------- Bars ---------- */
+.frow{display:grid;grid-template-columns:minmax(150px,1.1fr) 3fr minmax(140px,1.2fr);gap:14px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.frow:first-child{border-top:0}
+.fl b{display:block;font-weight:600}
+.fl span{font-size:12.5px;color:var(--muted)}
+.ftrack{position:relative;height:22px;background:var(--surface2);border-radius:6px;overflow:hidden}
+.ftrack .reg{position:absolute;inset:0 auto 0 0;background:var(--accent2);opacity:.5}
+.ftrack .att{position:absolute;inset:0 auto 0 0;background:var(--accent)}
+.fn{font-size:13px;color:var(--muted);text-align:right}
+.fn b{color:var(--text)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin:10px 0 0}
+.drow{display:grid;grid-template-columns:minmax(110px,1fr) 3fr 64px;gap:12px;align-items:center;padding:5px 0;font-size:14px}
+.dtrack{height:12px;background:var(--surface2);border-radius:6px;overflow:hidden}
+.dfill{height:100%;border-radius:6px}
+.dpair{display:grid;gap:3px}
+.dnum{text-align:right;color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}
+.sub-h{font:600 11px/1 var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.mix{display:flex;height:14px;border-radius:7px;overflow:hidden;background:var(--surface2);margin:8px 0}
+.mix i{display:block;height:100%}
+.leg2{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--muted)}
+.stat{display:flex;justify-content:space-between;padding:7px 0;border-top:1px solid var(--line);font-size:14px}
+.stat span:first-child{color:var(--muted)}
+.mini{background:var(--surface2);border-radius:12px;padding:16px}
+.mini h3{font:600 15px var(--body);margin-bottom:2px}
+
+/* ---------- Tables ---------- */
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:560px}
+th{font:600 11px/1.2 var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.str-high{color:var(--good);font-weight:600} .str-medium{color:var(--warn);font-weight:600} .str-low{color:var(--muted)}
+q{font-style:italic;color:var(--text)} q::before,q::after{color:var(--accent)}
+
+/* ---------- Q&A / polls ---------- */
+.theme-row{padding:10px 0;border-top:1px solid var(--line)}
+.theme-row:first-of-type{border-top:0}
+.theme-row .top2{display:flex;justify-content:space-between;gap:10px;font-weight:600}
+.theme-row p{margin:2px 0 0;font-size:13.5px;color:var(--muted)}
+.poll{margin-top:14px}
+.poll h4{margin:0 0 6px;font:600 14px var(--body)}
+.notice{padding:12px 14px;border:1px dashed var(--line);border-radius:10px;color:var(--muted);font-size:13.5px}
+
+/* ---------- Recommendations ---------- */
+.recs{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.rec{background:var(--surface2);border-radius:14px;padding:18px;border-top:3px solid var(--accent)}
+.rec .no{font:400 40px/1 var(--display);color:var(--accent)}
+.rec h3{font:600 17px/1.3 var(--body);margin:4px 0 10px}
+.rec dl{margin:0;font-size:13.5px}
+.rec dt{font:600 10.5px/1 var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:10px}
+.rec dd{margin:3px 0 0}
+
+/* ---------- Sales drawer ---------- */
+tr.clk{cursor:pointer} tr.clk:hover td{background:var(--surface2)}
+button.lnk{background:none;border:0;padding:0;font:inherit;font-weight:700;color:var(--text);cursor:pointer;text-align:left;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
+button.lnk:hover{text-decoration-color:var(--accent)}
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .2s;z-index:50}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(440px,100vw);background:var(--surface);color:var(--text);border-left:1px solid var(--line);box-shadow:-12px 0 32px rgba(0,0,0,.25);transform:translateX(100%);transition:transform .22s ease;z-index:51;display:flex;flex-direction:column;visibility:hidden}
+.drawer.on{transform:none;visibility:visible}
+.drawer header{display:flex;justify-content:space-between;gap:12px;padding:20px 20px 14px;border-bottom:1px solid var(--line)}
+.drawer h2{font:400 30px/1 var(--display);letter-spacing:.02em}
+.drawer .who{color:var(--muted);font-size:13.5px;margin-top:4px}
+.drawer .x{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:999px;width:34px;height:34px;font-size:18px;line-height:1;cursor:pointer;flex:none}
+.drawer .x:hover{color:var(--text)}
+.drawer .body{padding:18px 20px 28px;overflow-y:auto;flex:1}
+.drawer .sec{margin-top:18px}
+.drawer .sec:first-child{margin-top:0}
+.act{padding:10px 12px;border:1px solid var(--line);border-radius:10px;margin-top:8px;background:var(--surface2)}
+.act b{font:600 11px/1 var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:5px}
+.act p{margin:0;font-size:14px}
+@media (prefers-reduced-motion:reduce){.drawer,.scrim{transition:none}}
+@media print{.drawer,.scrim{display:none}}
+
+/* ---------- Misc ---------- */
+details>summary{cursor:pointer;color:var(--muted);font-size:13px;margin-top:6px}
+ul.flags{margin:0;padding-left:18px;color:var(--muted);font-size:13.5px} ul.flags li{margin:4px 0}
+ul.flags li strong{color:var(--text)}
+.insights{margin:16px 0 0;padding:0;list-style:none;display:grid;gap:8px}
+.insights li{padding:10px 14px;background:var(--surface);border:1px solid var(--line);border-radius:10px;font-size:14.5px}
+.insights li::before{content:"▸";color:var(--accent);margin-right:8px}
+footer{margin-top:28px;color:var(--muted);font-size:12.5px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.svt{font:600 11px var(--body);fill:var(--muted)} .svl{font:500 11px var(--body);fill:var(--muted)}
+.internal{margin-top:10px;font-size:12.5px;color:var(--warn)}
+@media (max-width:640px){
+  .frow{grid-template-columns:1fr;gap:6px}.fn{text-align:left}
+  .drow{grid-template-columns:1fr 64px}.drow .dtrack{grid-column:1/-1;order:3}
+  .card{padding:16px}
+}
+@media print{.theme{display:none}body{background:#fff;color:#000}.card,.tile{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app" aria-live="polite"></div>
+
+<!-- The skill replaces the placeholder below with the report JSON.
+     Escape every "<" inside string values as \u003c so attendee text can never close this tag. -->
+<script type="application/json" id="report-data">__REPORT_DATA__</script>
+
+<script>
+(function(){
+"use strict";
+var app=document.getElementById('app'), D;
+try{ D=JSON.parse(document.getElementById('report-data').textContent); }
+catch(err){ app.innerHTML='<div class="card"><h2>Report data could not be read</h2><p class="lede">The embedded JSON is invalid.</p></div>'; return; }
+
+var M=D.meta||{}, E=D.events||[], style=M.style||'standard', mode=M.mode||(E.length>2?'trend':E.length===2?'compare':'single');
+var COL=['var(--accent)','var(--accent2)'];
+var SEN=['C-Level','VP','Director','Manager','Individual','Other','Unknown'];
+var MIXC={polls:'var(--accent2)',qa:'var(--accent)',chats:'color-mix(in srgb, var(--accent) 45%, var(--surface2))',cta:'#F5B84A',resource_click:'#5BB8F5',survey:'#E86FB0'};
+var MIXL={polls:'Polls',qa:'Q&A',chats:'Chats',cta:'CTA clicks',resource_click:'Resource clicks',survey:'Survey'};
+
+
+/* ---------- Accent colours (user-supplied, contrast-corrected per theme) ---------- */
+function hx(h){h=String(h||'').trim().replace(/^#/,'');if(/^[0-9a-f]{3}$/i.test(h))h=h.replace(/(.)/g,'$1$1');return /^[0-9a-f]{6}$/i.test(h)?[0,2,4].map(function(i){return parseInt(h.substr(i,2),16);}):null;}
+function L(c){var a=c.map(function(v){v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4);});return .2126*a[0]+.7152*a[1]+.0722*a[2];}
+function cr(a,b){var x=L(a),y=L(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05);}
+function mixc(c,t,k){return c.map(function(v,i){return Math.round(v+(t[i]-v)*k);});}
+function toHex(c){return '#'+c.map(function(v){return ('0'+v.toString(16)).slice(-2);}).join('');}
+function rot(c,deg){var r=c[0]/255,g=c[1]/255,b=c[2]/255,mx=Math.max(r,g,b),mn=Math.min(r,g,b),h=0,s=0,l=(mx+mn)/2,d=mx-mn;
+  if(d){s=l>.5?d/(2-mx-mn):d/(mx+mn);h=mx===r?(g-b)/d+(g<b?6:0):mx===g?(b-r)/d+2:(r-g)/d+4;h*=60;}
+  h=(h+deg)%360;s=Math.min(Math.max(s,.4),.62);l=Math.min(Math.max(l,.42),.58);
+  function f(n){var k=(n+h/30)%12,a=s*Math.min(l,1-l);return Math.round(255*(l-a*Math.max(-1,Math.min(k-3,Math.min(9-k,1)))));}
+  return [f(0),f(8),f(4)];}
+function fit(c,bg){var t=L(bg)<.5?[255,255,255]:[0,0,0],n=0;while(cr(c,bg)<3.2&&n++<24)c=mixc(c,t,.08);return c;}
+function applyAccent(){
+  var a=hx(M.accent); if(!a)return;
+  var b=hx(M.accent2)||rot(a,150), root=document.documentElement, cur=root.getAttribute('data-theme');
+  var dark=cur?cur==='dark':(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);
+  var bg=dark?[30,27,38]:[255,255,255];
+  root.style.setProperty('--accent',toHex(fit(a,bg))); root.style.setProperty('--accent2',toHex(fit(b,bg)));
+}
+applyAccent();
+if(window.matchMedia){var mq=window.matchMedia('(prefers-color-scheme: dark)');if(mq.addEventListener)mq.addEventListener('change',applyAccent);}
+
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function fmt(n){return n==null||isNaN(n)?'—':Number(n).toLocaleString('en-US');}
+function r1(n){return Math.round(n*10)/10;}
+function pc(n){return n==null||isNaN(n)?'—':r1(n)+'%';}
+function sd(d){var x=new Date(String(d).slice(0,10)+'T12:00:00Z');return isNaN(x)?esc(d||''):x.toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'UTC'});}
+function ld(d){var x=new Date(String(d).slice(0,10)+'T12:00:00Z');return isNaN(x)?esc(d||''):x.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',timeZone:'UTC'});}
+function sum(k){return E.reduce(function(s,e){return s+(Number(e[k])||0);},0);}
+function delta(a,b,unit,hb){ if(a==null||b==null)return ''; var d=r1(b-a); if(d===0)return '<span class="chip">no change</span>'; var up=d>0, good=(hb===false)?!up:up;
+  return '<span class="chip '+(good?'up':'down')+'">'+(up?'▲ ':'▼ ')+Math.abs(d).toLocaleString('en-US')+(unit||'')+'</span>'; }
+function tile(k,v,s,x){return '<div class="tile"><div class="k">'+esc(k)+'</div><div class="v">'+v+'</div>'+(s?'<div class="s">'+s+'</div>':'')+(x||'')+'</div>';}
+function estTag(e){return (e.attendedIsEstimate||e.attended==null)?' <span class="chip est">approx.</span>':'';}
+
+/* ---------- KPI tiles ---------- */
+function kpis(){
+  var h='';
+  if(mode==='single'){
+    var e=E[0];
+    h+=tile('Registered',fmt(e.registered),M.internalExcluded&&e.internalRemoved?('external only · '+fmt(e.internalRemoved)+' internal removed'):'');
+    h+=tile('Attended',e.attended!=null?(fmt(e.attended)+estTag(e)):'unavailable','');
+    h+=tile('Attendance rate',pc(e.attendanceRate),'');
+  } else if(mode==='compare'){
+    var a=E[0],b=E[1];
+    var two=function(k,f,unit,hb){var va=f(a),vb=f(b);return '<div class="vs"><span><i class="dot" style="background:'+COL[0]+'"></i>'+(k.fmt?k.fmt(va):fmt(va))+'</span><span><i class="dot" style="background:'+COL[1]+'"></i>'+(k.fmt?k.fmt(vb):fmt(vb))+'</span></div>';};
+    h+=tile('Registered',two({},function(e){return e.registered;}),'B vs A',delta(a.registered,b.registered,'',true));
+    h+=tile('Attended',two({fmt:function(v){return v!=null?fmt(v)+' <span class="chip est">approx.</span>':'n/a';}},function(e){return e.attended;}),'B vs A','');
+    h+=tile('Attendance rate',two({fmt:pc},function(e){return e.attendanceRate;}),'B vs A',delta(a.attendanceRate,b.attendanceRate,' pts',true));
+  } else {
+    var reg=sum('registered');
+    var rated=E.filter(function(e){return (e.registered||0)>0&&e.attendanceRate!=null;});
+    var ratedReg=rated.reduce(function(s,e){return s+e.registered;},0);
+    var avgRate=ratedReg>0?rated.reduce(function(s,e){return s+e.attendanceRate*e.registered;},0)/ratedReg:null;
+    var best=rated.slice().sort(function(x,y){return y.attendanceRate-x.attendanceRate;})[0];
+    var caveat=rated.length<E.length?' ('+fmt(E.length-rated.length)+' events excluded: no rate)':'';
+    h+=tile('Events',fmt(E.length),esc(M.timeframe||''));
+    h+=tile('Total registered',fmt(reg),'');
+    h+=tile('Avg attendance rate',avgRate!=null?pc(avgRate):'unavailable',avgRate!=null?'weighted by registrations'+caveat:'no eligible events');
+    if(best)h+=tile('Best attendance',pc(best.attendanceRate),esc(best.name));
+  }
+  return '<div class="kpis">'+h+'</div>';
+}
+
+/* ---------- 1. Registered vs attended ---------- */
+function frow(e,i,max){
+  var rw=max?(e.registered||0)/max*100:0, aw=max?(e.attended||0)/max*100:0;
+  return '<div class="frow"><div class="fl"><b>'+(mode==='compare'?'<i class="dot" style="background:'+COL[i]+'"></i>':'')+esc(e.name)+'</b><span>'+ld(e.date)+(e.type?' · '+esc(e.type):'')+'</span></div>'
+   +'<div class="ftrack" role="img" aria-label="'+fmt(e.attended)+' of '+fmt(e.registered)+' attended"><div class="reg" style="width:'+rw+'%"></div><div class="att" style="width:'+aw+'%"></div></div>'
+   +'<div class="fn"><b>'+fmt(e.attended)+'</b> of '+fmt(e.registered)+' · <b>'+pc(e.attendanceRate)+'</b>'+estTag(e)+'</div></div>';
+}
+function trendChart(){
+  var n=E.length,gw=58,h=230,pb=44,pt=26,W=Math.max(n*gw+50,360),max=Math.max.apply(null,E.map(function(e){return e.registered||0;}).concat([1]));
+  var sy=function(v){return (h-pb-pt)*v/max;}, g='';
+  E.forEach(function(e,i){var x=34+i*gw,rh=sy(e.registered||0),ah=sy(e.attended||0);
+    g+='<rect x="'+x+'" y="'+(h-pb-rh)+'" width="19" height="'+rh+'" rx="3" fill="var(--accent2)" opacity=".5"/>';
+    g+='<rect x="'+(x+21)+'" y="'+(h-pb-ah)+'" width="19" height="'+ah+'" rx="3" fill="var(--accent)"/>';
+    g+='<text x="'+(x+20)+'" y="'+(h-pb-Math.max(rh,ah)-7)+'" text-anchor="middle" class="svt">'+(e.attendanceRate!=null?Math.round(e.attendanceRate)+'%':'')+'</text>';
+    g+='<text x="'+(x+20)+'" y="'+(h-pb+17)+'" text-anchor="middle" class="svl">'+sd(e.date)+'</text>';});
+  return '<div class="scroll"><svg viewBox="0 0 '+W+' '+h+'" width="100%" style="min-width:'+W+'px" role="img" aria-label="Registered versus attended by event, in date order"><line x1="24" x2="'+(W-10)+'" y1="'+(h-pb)+'" y2="'+(h-pb)+'" stroke="var(--line)"/>'+g+'</svg></div>';
+}
+function secAttendance(){
+  var max=Math.max.apply(null,E.map(function(e){return e.registered||0;}).concat([1])), h='';
+  if(mode==='trend'){
+    h+=trendChart();
+    h+='<div class="legend"><span><i class="dot" style="background:var(--accent2);opacity:.5"></i>Registered</span><span><i class="dot" style="background:var(--accent)"></i>Attended</span><span>% = attendance rate</span></div>';
+    h+='<div class="scroll" style="margin-top:14px"><table><thead><tr><th>Event</th><th>Date</th><th class="num">Registered</th><th class="num">Attended</th><th class="num">Rate</th></tr></thead><tbody>'
+      +E.map(function(e){return '<tr><td>'+esc(e.name)+'</td><td>'+ld(e.date)+'</td><td class="num">'+fmt(e.registered)+'</td><td class="num">'+fmt(e.attended)+estTag(e)+'</td><td class="num">'+pc(e.attendanceRate)+'</td></tr>';}).join('')+'</tbody></table></div>';
+  } else {
+    h+=E.map(function(e,i){return frow(e,i,max);}).join('');
+    h+='<div class="legend"><span><i class="dot" style="background:var(--accent2);opacity:.5"></i>Registered</span><span><i class="dot" style="background:var(--accent)"></i>Attended</span></div>';
+  }
+  if(M.internalExcluded){var tot=E.reduce(function(s,e){return s+(e.internalRemoved||0);},0); h+='<div class="internal">Internal registrants ('+esc((M.internalDomains||[]).join(', '))+') removed: '+fmt(tot)+'. Attended counts are approximate and include all audience (internal + external).</div>';}
+  return card('Registered vs. attended','Who signed up and who actually showed up.',h,'attendance');
+}
+
+/* ---------- 2. Audience ---------- */
+function agg(key){var m={},order=[];E.forEach(function(e){(e[key]||[]).forEach(function(r){if(!(r.label in m)){m[r.label]=0;order.push(r.label);}m[r.label]+=Number(r.count)||0;});});return {m:m,order:order};}
+function dist(key,title,note){
+  var has=E.some(function(e){return e[key]&&e[key].length;});
+  if(!has)return '<div class="mini"><h3>'+title+'</h3><div class="notice" style="margin-top:10px">'+esc(note)+'</div></div>';
+  var labels=SEN.slice(), body='';
+  if(mode==='compare'){
+    var tots=E.map(function(e){return (e[key]||[]).reduce(function(s,r){return s+(Number(r.count)||0);},0);});
+    labels.forEach(function(l){
+      var bars='',nums='';
+      E.forEach(function(e,i){var r=(e[key]||[]).filter(function(x){return x.label===l;})[0],c=r?Number(r.count)||0:0,p=tots[i]?c/tots[i]*100:0;
+        bars+='<div class="dtrack"><div class="dfill" style="width:'+p+'%;background:'+COL[i]+'"></div></div>'; nums+=(i?' / ':'')+Math.round(p)+'%';});
+      body+='<div class="drow"><span>'+esc(l)+'</span><div class="dpair">'+bars+'</div><span class="dnum">'+nums+'</span></div>';});
+    body+='<div class="legend"><span><i class="dot" style="background:'+COL[0]+'"></i>'+esc(E[0].name)+'</span><span><i class="dot" style="background:'+COL[1]+'"></i>'+esc(E[1].name)+'</span></div>';
+  } else {
+    var a2=agg(key),tot=labels.reduce(function(s,l){return s+(a2.m[l]||0);},0);
+    labels.forEach(function(l){var c=a2.m[l]||0,p=tot?c/tot*100:0;
+      body+='<div class="drow"><span>'+esc(l)+'</span><div class="dtrack"><div class="dfill" style="width:'+p+'%;background:var(--accent)"></div></div><span class="dnum">'+Math.round(p)+'% · '+fmt(c)+'</span></div>';});
+  }
+  return '<div class="mini"><h3>'+title+'</h3>'+body+'</div>';
+}
+function topCompanies(){
+  var m={};E.forEach(function(e){(e.topCompanies||[]).forEach(function(c){m[c.name]=(m[c.name]||0)+(Number(c.count)||0);});});
+  var arr=Object.keys(m).map(function(k){return {n:k,c:m[k]};}).sort(function(a,b){return b.c-a.c;}).slice(0,12);
+  if(!arr.length)return '';
+  return '<div style="margin-top:16px"><p class="sub-h">Top registering companies</p><div class="sbar">'+arr.map(function(x){return '<span class="chip">'+esc(x.n)+' · '+x.c+'</span>';}).join('')+'</div>'+'</div>';
+}
+function secAudience(){
+  var h=dist('seniority','By seniority','Seniority not available.')+topCompanies();
+  var base=M.audienceBase||'registrants';
+  return card('Audience breakdown','Share of '+esc(base)+' by seniority, which Goldcast infers from job titles, plus the companies that registered most.',h,'audience');
+}
+
+/* ---------- 3. Engagement, Q&A, polls ---------- */
+function mixBlock(e){
+  var b=e.engagement||{},keys=Object.keys(MIXC).filter(function(k){return b[k]>0;}),t=keys.reduce(function(s,k){return s+b[k];},0);
+  if(!t)return '<div class="notice">No engagement actions recorded.</div>';
+  return '<div class="mix" role="img" aria-label="Engagement mix">'+keys.map(function(k){return '<i style="width:'+(b[k]/t*100)+'%;background:'+MIXC[k]+'"></i>';}).join('')+'</div>'
+    +'<div class="leg2">'+keys.map(function(k){return '<span><i class="dot" style="background:'+MIXC[k]+'"></i>'+MIXL[k]+' '+fmt(b[k])+'</span>';}).join('')+'</div>';
+}
+function engCard(e,i){
+  return '<div class="mini"><h3>'+(mode==='compare'?'<i class="dot" style="background:'+COL[i]+'"></i>':'')+esc(e.name)+'</h3>'
+   +mixBlock(e)
+   +'<div style="margin-top:10px"><div class="stat"><span>Total actions</span><b>'+fmt(e.totalEngagement)+'</b></div></div></div>';
+}
+function engTable(){
+  return '<div class="scroll"><table><thead><tr><th>Event</th><th class="num">Chats</th><th class="num">Q&amp;A</th><th class="num">Polls</th><th class="num">CTA</th><th class="num">Resources</th></tr></thead><tbody>'
+   +E.map(function(e){var b=e.engagement||{};return '<tr><td>'+esc(e.name)+'</td><td class="num">'+fmt(b.chats)+'</td><td class="num">'+fmt(b.qa)+'</td><td class="num">'+fmt(b.polls)+'</td><td class="num">'+fmt(b.cta)+'</td><td class="num">'+fmt(b.resource_click)+'</td></tr>';}).join('')+'</tbody></table></div>';
+}
+function secEngagement(){
+  var h=(mode==='trend')?engTable():'<div class="grid g2">'+E.map(engCard).join('')+'</div>';
+  return card('Engagement','',h,'engagement');
+}
+function themeList(list){return list.map(function(t){return '<div class="theme-row"><div class="top2"><span>'+esc(t.theme)+'</span><span class="dnum">'+fmt(t.count)+' question'+(t.count===1?'':'s')+'</span></div>'+(t.summary?'<p>'+esc(t.summary)+'</p>':'')+(t.example?'<p><q>'+esc(t.example)+'</q></p>':'')+'</div>';}).join('');}
+function pollBlock(p){var tot=(p.responses||[]).reduce(function(s,r){return s+(Number(r.count)||0);},0);
+  return '<div class="poll"><h4>'+esc(p.question)+'</h4>'+(p.responses||[]).map(function(r){var q=tot?r.count/tot*100:0;return '<div class="drow"><span>'+esc(r.option)+'</span><div class="dtrack"><div class="dfill" style="width:'+q+'%;background:var(--accent2)"></div></div><span class="dnum">'+Math.round(q)+'% · '+fmt(r.count)+'</span></div>';}).join('')+'</div>';}
+function secQA(){
+  var h='';
+  var roll=D.rollup||{};
+  if(mode==='trend'&&roll.qaThemes&&roll.qaThemes.length){h+='<p class="sub-h">Themes across all events</p>'+themeList(roll.qaThemes);}
+  var evs=(mode==='trend')?E.filter(function(e){return (e.polls&&e.polls.length)||(!roll.qaThemes&&e.qaThemes&&e.qaThemes.length);}).slice(0,6):E;
+  evs.forEach(function(e,i){
+    var body='';
+    if(mode!=='trend'||!roll.qaThemes){
+      if(e.qaThemes&&e.qaThemes.length)body+='<p class="sub-h">Q&amp;A themes</p>'+themeList(e.qaThemes);
+      else body+='<div class="notice">'+esc((e.qaStatus&&e.qaStatus.note)||'No Q&A questions were retrievable for this event.')+'</div>';
+    }
+    if(e.polls&&e.polls.length)body+='<p class="sub-h" style="margin-top:16px">Poll responses</p>'+e.polls.map(pollBlock).join('');
+    else if(mode!=='trend')body+='<div class="notice" style="margin-top:12px">'+esc((e.pollStatus&&e.pollStatus.note)||'No poll responses were retrievable for this event.')+'</div>';
+    if(body)h+='<div class="mini" style="margin-top:14px"><h3>'+(mode==='compare'?'<i class="dot" style="background:'+COL[i]+'"></i>':'')+esc(e.name)+'</h3>'+body+'</div>';
+  });
+  if(!h)h='<div class="notice">No Q&amp;A or poll data could be retrieved for these events.</div>';
+  var inner=(style==='executive')?'<details><summary>Show Q&amp;A themes and poll responses</summary>'+h+'</details>':h;
+  return card('Q&A themes & poll responses','What attendees asked and how they voted. Themes are grouped by this report from attendee questions; attendee names are omitted.',inner,'qa');
+}
+
+/* ---------- Style-specific sections ---------- */
+function secSales(){
+  var S=D.sales||{},h='';
+  var fu=S.followUps||[];
+  if(fu.length){
+    h+='<p class="sub-h">Follow up now: named list ('+fu.length+')</p><p class="lede" style="margin:0 0 8px">Select a row to see how that person engaged.</p><div class="scroll"><table><thead><tr><th>Priority</th><th>Name</th><th>Title</th><th>Company</th><th>Email</th><th>Why now</th><th>Event</th><th>Suggested next step</th></tr></thead><tbody>'
+    +fu.map(function(r,i){var q=r.quote?'<br><q>'+esc(r.quote)+'</q>':'';return '<tr class="clk" data-fu="'+i+'"><td class="str-'+(r.priority===1?'high':r.priority===2?'medium':'low')+'">'+(r.priority===1?'1 · Now':r.priority===2?'2 · This week':'3 · Nurture')+'</td><td><button type="button" class="lnk" data-fu="'+i+'" aria-haspopup="dialog" aria-label="Show how '+esc(r.name)+' engaged">'+esc(r.name)+'</button></td><td>'+esc(r.title||'')+'</td><td>'+esc(r.company||'')+'</td><td>'+(r.email?'<a href="mailto:'+encodeURIComponent(r.email).replace(/%40/g,'@')+'">'+esc(r.email)+'</a>':'')+'</td><td>'+esc(r.signal||'')+q+'</td><td>'+esc(r.event||'')+'</td><td>'+esc(r.action||'')+'</td></tr>';}).join('')+'</tbody></table></div>';
+  }
+  var acc=S.priorityAccounts||[];
+  if(acc.length){h+='<p class="sub-h" style="margin-top:18px">Account view</p><div class="scroll"><table><thead><tr><th>Account</th><th>Signals</th><th class="num">Senior contacts</th><th class="num">Events</th><th>Suggested follow-up</th></tr></thead><tbody>'
+    +acc.map(function(a){return '<tr><td><b>'+esc(a.account)+'</b></td><td>'+esc((a.signals||[]).join('; '))+'</td><td class="num">'+fmt(a.seniorContacts)+'</td><td class="num">'+fmt(a.eventsAttended)+'</td><td>'+esc(a.action||'')+'</td></tr>';}).join('')+'</tbody></table></div>';}
+  if(!fu.length&&!acc.length)h+='<div class="notice">'+esc(S.note||'No follow-up contacts could be derived from the available Goldcast data.')+'</div>';
+  if(S.note&&(fu.length||acc.length))h+='<div class="legend"><span>'+esc(S.note)+'</span></div>';
+  if(fu.length)h+='<div class="internal">Contains individual attendee details (names and emails). Internal use only.</div>';
+  return card('Follow-up priorities','Who to contact first and why, ranked by seniority, repeat attendance and what people asked or said.',h,'sales');
+}
+function secMarketing(){
+  var K=D.marketing||{},h='';
+  function rows(list,cols){return '<div class="scroll"><table><thead><tr>'+cols.map(function(c){return '<th>'+c[0]+'</th>';}).join('')+'</tr></thead><tbody>'+list.map(function(r){return '<tr>'+cols.map(function(c){return '<td>'+esc(r[c[1]]==null?'':r[c[1]])+'</td>';}).join('')+'</tr>';}).join('')+'</tbody></table></div>';}
+  if((K.contentSignals||[]).length)h+='<p class="sub-h">Content performance</p>'+rows(K.contentSignals,[['Signal','label'],['Value','value'],['What it tells you','read']]);
+  if((K.pipelineSignals||[]).length)h+='<p class="sub-h" style="margin-top:18px">Pipeline signals (Goldcast data only)</p>'+rows(K.pipelineSignals,[['Signal','label'],['Value','value'],['Note','note']]);
+  if((K.repurpose||[]).length)h+='<p class="sub-h" style="margin-top:18px">Repurposing opportunities</p>'+rows(K.repurpose,[['Asset','asset'],['Source','source'],['Why','why']]);
+  if(!h)h='<div class="notice">No marketing signals could be derived from the available data.</div>';
+  h+='<div class="legend"><span>No CRM or pipeline attribution is included — these are engagement-based signals only.</span></div>';
+  return card('Content performance, pipeline signals & repurposing','What worked, which signals point to pipeline, and what to turn into new content.',h,'marketing');
+}
+
+/* ---------- Recommendations & notes ---------- */
+function secRecs(){
+  var R=(D.recommendations||[]).slice(0,3);
+  var h='<div class="recs">'+R.map(function(r,i){return '<div class="rec"><div class="no">0'+(i+1)+'</div><h3>'+esc(r.title)+'</h3><dl><dt>Why (the evidence)</dt><dd>'+esc(r.evidence)+'</dd><dt>Do this</dt><dd>'+esc(r.action)+'</dd>'+(r.metric?'<dt>Measure it by</dt><dd>'+esc(r.metric)+'</dd>':'')+'</dl></div>';}).join('')+'</div>';
+  return card('Three actions to take next','Each recommendation is tied to a number in this report.',h,'recs');
+}
+function secNotes(){
+  var N=D.notes||{},fl=N.flags||[],gp=N.gaps||[];
+  var h='';
+  if(fl.length)h+='<p class="sub-h">Read before quoting these numbers</p><ul class="flags">'+fl.map(function(f){return '<li>'+esc(f)+'</li>';}).join('')+'</ul>';
+  if(gp.length)h+='<p class="sub-h" style="margin-top:14px">Not available from Goldcast today</p><ul class="flags">'+gp.map(function(f){return '<li>'+esc(f)+'</li>';}).join('')+'</ul>';
+  if(!h)h='<div class="notice">No data-quality issues were found.</div>';
+  return card('Data notes','',h,'notes');
+}
+
+function card(title,lede,body,id){var n=++card.n;return '<section class="card" id="'+id+'" aria-labelledby="h-'+id+'"><h2 id="h-'+id+'"><span class="n">'+(n<10?'0':'')+n+'</span>'+title+'</h2>'+(lede?'<p class="lede">'+lede+'</p>':'')+body+'</section>';}
+card.n=0;
+
+/* ---------- Assemble by style ---------- */
+var ORDER={
+  standard:['attendance','audience','engagement','qa','recs','notes'],
+  executive:['recs','attendance','audience','engagement','qa','notes'],
+  sales:['sales','audience','qa','attendance','engagement','recs','notes'],
+  marketing:['engagement','qa','marketing','audience','attendance','recs','notes']
+};
+var FN={attendance:secAttendance,audience:secAudience,engagement:secEngagement,qa:secQA,recs:secRecs,notes:secNotes,sales:secSales,marketing:secMarketing};
+var styleLabel={standard:'Standard',executive:'Executive',sales:'Sales',marketing:'Marketing'}[style]||'Standard';
+var modeLabel={single:'Single event',compare:'Side-by-side',trend:'Timeframe'}[mode];
+
+var html='<div class="top"><div><span class="eyebrow">Goldcast · Post-event report</span><span class="badge">'+esc(styleLabel)+'</span><span class="badge">'+esc(modeLabel)+'</span></div><button class="theme" id="tg" type="button" aria-label="Toggle light or dark theme">Theme</button></div>'
+ +'<h1>'+esc(M.title||'Post-event report')+'</h1><p class="sub">'+esc(M.subtitle||'')+'</p>'
+ +(D.headline?'<div class="headline">'+esc(D.headline)+'</div>':'')
+ +(((D.insights||[]).length)?'<ul class="insights">'+D.insights.slice(0,style==='executive'?3:5).map(function(s){return '<li>'+esc(s)+'</li>';}).join('')+'</ul>':'')
+ +kpis();
+(ORDER[style]||ORDER.standard).forEach(function(k){html+=FN[k]();});
+html+='<footer><span>Source: Goldcast MCP ('+esc(((D.notes||{}).sources||['Goldcast']).join(', '))+')</span><span>Pulled '+esc(M.generatedOn||'')+(M.workspace?' · '+esc(M.workspace):'')+'</span></footer>';
+app.className='wrap style-'+style; app.innerHTML=html;
+
+
+/* ---------- Sales drawer: how a person engaged ---------- */
+(function(){
+  var fu=((D.sales||{}).followUps)||[]; if(!fu.length||style!=='sales')return;
+  var scrim=document.createElement('div'); scrim.className='scrim';
+  var dr=document.createElement('aside'); dr.className='drawer'; dr.setAttribute('role','dialog'); dr.setAttribute('aria-modal','true'); dr.setAttribute('aria-labelledby','dr-name'); dr.setAttribute('aria-hidden','true');
+  document.body.appendChild(scrim); document.body.appendChild(dr);
+  var last=null;
+  function act(a){return '<div class="act"><b>'+esc(a.type||'Activity')+(a.event?' · '+esc(a.event):'')+'</b><p>'+(a.text?esc(a.text):'<span style="color:var(--muted)">'+esc(a.note||'Recorded; no text available.')+'</span>')+'</p></div>';}
+  function fallback(r){var d=r.detail||{},o=[];
+    if(d.questions)o.push({type:'Questions asked',text:d.questions+' recorded'});
+    if(d.polls)o.push({type:'Poll responses',text:d.polls+' recorded'});
+    if(d.chats)o.push({type:'Chat messages',text:d.chats+' recorded'});
+    if(d.priorEvents)o.push({type:'Repeat attendance',text:'Also attended '+d.priorEvents+' earlier event'+(d.priorEvents===1?'':'s')});
+    if(r.quote&&!o.some(function(x){return x.type==='Question';}))o.push({type:'Said',text:r.quote});
+    return o;}
+  function open(i,from){var r=fu[i]; if(!r)return; last=from||document.activeElement;
+    var ORD=['Poll response','Question','Survey response','Chat','Repeat attendance'];
+    var list=((r.activity&&r.activity.length)?r.activity:fallback(r)).map(function(a,k){return {a:a,k:k};}).sort(function(x,y){var p=ORD.indexOf(x.a.type),q=ORD.indexOf(y.a.type);p=p<0?99:p;q=q<0?99:q;return p-q||x.k-y.k;}).map(function(x){return x.a;});
+    var pr=r.priority===1?'1 · Now':r.priority===2?'2 · This week':'3 · Nurture';
+    dr.innerHTML='<header><div><h2 id="dr-name">'+esc(r.name)+'</h2><div class="who">'+esc([r.title,r.company].filter(Boolean).join(' · '))+'</div>'
+      +(r.email?'<div class="who"><a href="mailto:'+encodeURIComponent(r.email).replace(/%40/g,'@')+'">'+esc(r.email)+'</a></div>':'')
+      +'<div style="margin-top:8px"><span class="chip str-'+(r.priority===1?'high':r.priority===2?'medium':'low')+'">Priority '+pr+'</span></div></div>'
+      +'<button type="button" class="x" aria-label="Close">×</button></header>'
+      +'<div class="body"><div class="sec"><p class="sub-h">How they engaged</p>'
+      +(list.length?list.map(act).join(''):'<div class="notice">No engagement detail was retrieved for this person.</div>')+'</div>'
+      +(r.signal?'<div class="sec"><p class="sub-h">Why now</p><p style="margin:0;font-size:14px">'+esc(r.signal)+'</p></div>':'')
+      +(r.action?'<div class="sec"><p class="sub-h">Suggested next step</p><p style="margin:0;font-size:14px">'+esc(r.action)+'</p></div>':'')
+      +'<div class="internal">Contains individual attendee details. Internal use only.</div></div>';
+    scrim.classList.add('on'); dr.classList.add('on'); dr.setAttribute('aria-hidden','false');
+    dr.querySelector('.x').focus(); dr.querySelector('.body').scrollTop=0;}
+  function close(){if(!dr.classList.contains('on'))return; scrim.classList.remove('on'); dr.classList.remove('on'); dr.setAttribute('aria-hidden','true'); if(last&&last.focus)last.focus();}
+  app.addEventListener('click',function(e){var row=e.target.closest&&e.target.closest('tr[data-fu]'); if(!row||e.target.closest('a'))return;
+    open(+row.getAttribute('data-fu'),row.querySelector('button.lnk'));});
+  scrim.addEventListener('click',close);
+  dr.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('.x'))close();});
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape')close();
+    if(e.key==='Tab'&&dr.classList.contains('on')){var f=dr.querySelectorAll('a[href],button:not([disabled])'); if(!f.length)return; var a=f[0],z=f[f.length-1];
+      if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus();} else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus();}}});
+})();
+
+var tg=document.getElementById('tg');
+tg.addEventListener('click',function(){var r=document.documentElement,cur=r.getAttribute('data-theme');
+  var sysDark=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;
+  var isDark=cur?cur==='dark':sysDark; r.setAttribute('data-theme',isDark?'light':'dark');applyAccent();});
+})();
+</script>
+</body>
+</html>
