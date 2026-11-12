@@ -10,7 +10,7 @@ license: "proprietary"
    - Call `mcp__Goldcast__search_events(query="<name>", upcomingOnly=false)` — past events are the common case for transcript search.
    - If multiple matches, show candidates and ask the user to pick.
    - If zero matches, ask the user to check the event name or provide a UUID.
-   - You need 1–10 event IDs. If the user wants more than 10, explain the limit and ask them to narrow down.
+   - You need 1–10 event IDs. If the user wants more than 10, explain the limit and ask them to narrow it down.
 
 2. **Search transcripts.** Call `mcp__Goldcast__search_transcripts(eventIds=[...], query="<topic>")`.
    - `query` must be 2–256 characters.
